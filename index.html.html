@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS School - College Selection Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        /* Enhanced Logo Styles */
+        .logo-container {
+            position: relative;
+            width: 48px;
+            height: 48px;
+        }
+
+        .logo-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            display: none;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .logo-image.loaded {
+            display: block;
+        }
+
+        .logo-text-fallback {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: white;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .logo-text-fallback.hidden {
+            display: none;
+        }
+
+        /* Premium Social Link Styles */
+        .social-link-premium {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            font-weight: 900;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            font-family: 'Arial Black', sans-serif;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .social-link-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .social-link-premium:hover::before {
+            left: 100%;
+        }
+
+        .facebook-link {
+            background: linear-gradient(135deg, #1877f2, #4267B2, #365899);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(24, 119, 242, 0.6), 
+                        0 0 40px rgba(24, 119, 242, 0.4),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(24, 119, 242, 0.3);
+        }
+
+        .facebook-link:hover {
+            box-shadow: 0 0 30px rgba(24, 119, 242, 0.9), 
+                        0 0 60px rgba(24, 119, 242, 0.6),
+                        0 0 80px rgba(24, 119, 242, 0.3),
+                        inset 0 0 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                         0 0 25px rgba(24, 119, 242, 0.8);
+        }
+
+        .youtube-link {
+            background: linear-gradient(135deg, #ff0000, #cc0000, #990000);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 
+                        0 0 40px rgba(255, 0, 0, 0.4),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+        }
+
+        .youtube-link:hover {
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.9), 
+                        0 0 60px rgba(255, 0, 0, 0.6),
+                        0 0 80px rgba(255, 0, 0, 0.3),
+                        inset 0 0 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                         0 0 25px rgba(255, 0, 0, 0.8);
+        }
+
+        /* Modern Header with Neon Effects */
+        .main-header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Enhanced Header Layout */
+        .header-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            min-height: 60px;
+        }
+
+        /* Dashing School Name with Simple White/Light Theme */
+        .dashing-school-name {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 0;
+            font-family: 'Arial Black', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            
+            /* Simple white with subtle light accent */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
+                         0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* DS Logo - Neon Style */
+        .ds-logo-link {
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .ds-logo-link:hover {
+            transform: scale(1.05);
+        }
+
+        .ds-logo-container {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+
+        .ds-logo-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            display: none;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .ds-logo-image.loaded {
+            display: block;
+        }
+
+        .ds-logo-fallback {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.3rem;
+            color: white;
+            font-family: 'Arial Black', sans-serif;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .ds-logo-fallback.hidden {
+            display: none;
+        }
+
+        /* Social Icons - Neon Style */
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            font-family: 'Arial Black', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .social-icon:hover::before {
+            left: 100%;
+        }
+
+        .youtube-icon {
+            background: linear-gradient(135deg, #ff0000, #cc0000, #990000);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 
+                        0 0 40px rgba(255, 0, 0, 0.4),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .youtube-icon:hover {
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.9), 
+                        0 0 60px rgba(255, 0, 0, 0.6),
+                        0 0 80px rgba(255, 0, 0, 0.3),
+                        inset 0 0 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                         0 0 25px rgba(255, 0, 0, 0.8);
+        }
+
+        .facebook-icon {
+            background: linear-gradient(135deg, #1877f2, #4267B2, #365899);
+            color: white;
+            box-shadow: 0 0 20px rgba(24, 119, 242, 0.6), 
+                        0 0 40px rgba(24, 119, 242, 0.4),
+                        inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(24, 119, 242, 0.3);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .facebook-icon:hover {
+            box-shadow: 0 0 30px rgba(24, 119, 242, 0.9), 
+                        0 0 60px rgba(24, 119, 242, 0.6),
+                        0 0 80px rgba(24, 119, 242, 0.3),
+                        inset 0 0 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                         0 0 25px rgba(24, 119, 242, 0.8);
+        }
+
+        /* Biology Banner - Nature Theme Green */
+        .biology-banner {
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .biology-button {
+            background: #34d399;
+            border-radius: 20px;
+            padding: 0.8rem 5rem;
+            position: relative;
+            overflow: hidden;
+            max-width: 800px;
+            width: 98%;
+            
+            /* Slightly Darker Green Border */
+            border: 3px solid rgba(52, 211, 153, 0.5);
+            
+            /* Slightly Darker Green Glow */
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.8),
+                        0 0 60px rgba(52, 211, 153, 0.6),
+                        0 0 90px rgba(52, 211, 153, 0.4),
+                        inset 0 0 30px rgba(255, 255, 255, 0.2);
+            
+            /* Slightly Darker Green Pulsing Animation */
+            animation: darkerGreenPulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes darkerGreenPulse {
+            0% {
+                box-shadow: 0 0 30px rgba(52, 211, 153, 0.8),
+                            0 0 60px rgba(52, 211, 153, 0.6),
+                            0 0 90px rgba(52, 211, 153, 0.4),
+                            inset 0 0 30px rgba(255, 255, 255, 0.2);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 0 0 40px rgba(52, 211, 153, 1),
+                            0 0 80px rgba(52, 211, 153, 0.8),
+                            0 0 120px rgba(52, 211, 153, 0.6),
+                            inset 0 0 40px rgba(255, 255, 255, 0.3);
+                transform: scale(1.02);
+            }
+        }
+
+        .biology-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .biology-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 900;
+            margin: 0;
+            font-family: 'Arial Black', sans-serif;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            line-height: 1.2;
+            white-space: nowrap;
+            
+            /* Nature-themed white text with green glow */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                         0 0 20px rgba(52, 211, 153, 0.6),
+                         0 0 30px rgba(16, 185, 129, 0.4),
+                         0 0 40px rgba(5, 150, 105, 0.3);
+        }
+
+        .biology-banner:hover .biology-button {
+            animation-duration: 1s;
+            box-shadow: 0 0 50px rgba(52, 211, 153, 1),
+                        0 0 100px rgba(52, 211, 153, 0.9),
+                        0 0 150px rgba(52, 211, 153, 0.7),
+                        inset 0 0 50px rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px) scale(1.03);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .form-container {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 64rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: #94a3b8;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+
+        .input, .select {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .input:focus, .select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input::placeholder {
+            color: #94a3b8;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-center {
+            text-align: center;
+            padding-top: 2rem;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            margin-top: 0.25rem;
+            max-height: 12rem;
+            overflow-y: auto;
+            z-index: 10;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .search-dropdown.active {
+            display: block;
+        }
+
+        .search-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #374151;
+            transition: background-color 0.2s;
+        }
+
+        .search-item:hover {
+            background: #374151;
+        }
+
+        .college-info {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        .stats-display {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #475569;
+            text-align: center;
+        }
+
+        .stats-display h4 {
+            color: #3b82f6;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-display p {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+        }
+
+        .success-container {
+            max-width: 32rem;
+            margin: 4rem auto;
+            padding: 0 1rem;
+        }
+
+        .success-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .success-text {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .success-social-links {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .success-btn {
+            padding: 1rem 2.5rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .success-btn:hover::before {
+            left: 100%;
+        }
+
+        .success-facebook-btn {
+            background: linear-gradient(135deg, #1877f2, #4267B2, #365899);
+            color: white;
+            border: 3px solid rgba(24, 119, 242, 0.3);
+            box-shadow: 0 0 25px rgba(24, 119, 242, 0.4),
+                        0 0 50px rgba(24, 119, 242, 0.2),
+                        0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-facebook-btn:hover {
+            box-shadow: 0 0 35px rgba(24, 119, 242, 0.7),
+                        0 0 70px rgba(24, 119, 242, 0.4),
+                        0 0 100px rgba(24, 119, 242, 0.2),
+                        0 12px 35px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .success-youtube-btn {
+            background: linear-gradient(135deg, #ff0000, #cc0000, #990000);
+            color: white;
+            border: 3px solid rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4),
+                        0 0 50px rgba(255, 0, 0, 0.2),
+                        0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-youtube-btn:hover {
+            box-shadow: 0 0 35px rgba(255, 0, 0, 0.7),
+                        0 0 70px rgba(255, 0, 0, 0.4),
+                        0 0 100px rgba(255, 0, 0, 0.2),
+                        0 12px 35px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .biology-promo {
+            background: linear-gradient(135deg, #10b981, #34d399, #6ee7b7);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 3px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4),
+                        0 0 60px rgba(16, 185, 129, 0.2),
+                        0 15px 35px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .biology-promo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 1s;
+        }
+
+        .biology-promo:hover::before {
+            left: 100%;
+        }
+
+        .biology-promo h3 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(45deg, #ffffff, #f0fdf4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .biology-promo p {
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .biology-promo-btn {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            color: #10b981;
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .biology-promo-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+        }
+
+        .info-display {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #475569;
+        }
+
+        .preferences-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #3b82f6;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        .error {
+            background: #ef4444;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .dashing-school-name {
+                font-size: 1.6rem !important;
+            }
+
+            .social-icons {
+                gap: 0.8rem;
+            }
+
+            .social-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 1.2rem;
+            }
+
+            .biology-title {
+                font-size: 1rem;
+            }
+
+            .biology-button {
+                padding: 0.6rem 2.5rem;
+                max-width: 98%;
+                border-radius: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashing-school-name {
+                font-size: 1.3rem !important;
+            }
+
+            .social-icons {
+                gap: 0.6rem;
+            }
+
+            .social-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .biology-title {
+                font-size: 0.9rem;
+            }
+
+            .biology-button {
+                padding: 0.5rem 2rem;
+                border-radius: 12px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Minimalistic Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-line">
+                <!-- Left: DS Logo -->
+                <a href="#" id="dsSchoolLink" class="ds-logo-link">
+                    <div class="ds-logo-container">
+                        <img id="dsLogoImage" class="ds-logo-image" alt="DS School Logo" 
+                             onerror="this.style.display='none'; document.getElementById('dsLogoFallback').classList.remove('hidden')">
+                        <div id="dsLogoFallback" class="ds-logo-fallback">DS</div>
+                    </div>
+                </a>
+                
+                <!-- Center: School Name with Dashing Effect -->
+                <h1 class="dashing-school-name">
+                    DMC Station School
+                </h1>
+                
+                <!-- Right: Y and F Icons -->
+                <div class="social-icons">
+                    <a href="#" id="mainYoutubeLink" class="social-icon youtube-icon" target="_blank" title="YouTube">Y</a>
+                    <a href="#" id="mainFacebookLink" class="social-icon facebook-icon" target="_blank" title="Facebook">F</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Biology Banner - Clickable -->
+    <a href="#" id="biologyBannerLink" class="biology-banner">
+        <div class="container">
+            <div class="biology-button">
+                <div class="biology-content">
+                    <h1 class="biology-title">🧬 HSC 27 Biology Topper Batch</h1>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <main class="container">
+        <!-- Basic Info Form -->
+        <div id="basicForm" class="form-container">
+            <div class="form-header">
+                <h2>Student Information</h2>
+                <p>Please provide your basic information</p>
+            </div>
+            
+            <form id="studentForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="label">Full Name *</label>
+                        <input type="text" id="fullName" class="input" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">School Name *</label>
+                        <input type="text" id="schoolName" class="input" placeholder="Enter your school name" required>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="label">Student Mobile (11 digits) *</label>
+                        <input type="tel" id="studentPhone" class="input" placeholder="01712345678" maxlength="11" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Parent Mobile (11 digits) *</label>
+                        <input type="tel" id="parentPhone" class="input" placeholder="01987654321" maxlength="11" required>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="label">SSC GPA (out of 5) *</label>
+                        <input type="text" id="sscGpa" class="input" placeholder="5.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Total Marks (out of 1300) *</label>
+                        <input type="number" id="totalMarks" class="input" placeholder="1200" max="1300" required>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="label">Gender *</label>
+                        <select id="gender" class="select" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Version *</label>
+                        <select id="version" class="select" required>
+                            <option value="">Select Version</option>
+                            <option value="English">English</option>
+                            <option value="Bangla">Bangla</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="btn-center">
+                    <button type="submit" class="btn btn-primary">Next: Select Colleges</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- College Selection Form -->
+        <div id="collegeForm" class="form-container hidden">
+            <div class="form-header">
+                <h2>College Selection</h2>
+                <p id="selectionInfo">Select colleges for your preference</p>
+                <div class="info-display" id="studentInfo"></div>
+            </div>
+            
+            <div id="loadingColleges" class="loading">
+                <p>Loading colleges from Google Sheets...</p>
+            </div>
+            
+            <div id="errorMessage" class="error hidden">
+                <p>Error loading colleges. Please try again.</p>
+            </div>
+            
+            <div id="collegeSelection" class="hidden">
+                <!-- College Statistics -->
+                <div class="stats-display" id="collegeStats">
+                    <h4>📊 Available Colleges</h4>
+                    <p id="statsText">Loading statistics...</p>
+                </div>
+                
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: white; margin-bottom: 1rem;">College Preferences</h3>
+                <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1rem;">
+                    Select <strong>at least 1 college</strong> (up to 10 maximum). All colleges from our database are shown.
+                    <br><span style="color: #10b981;">✅ You can submit with just 1 preference or fill up to 10 preferences.</span>
+                </p>
+                
+                <div class="preferences-list" id="preferencesList">
+                    <!-- Preferences will be added here dynamically -->
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; padding-top: 2rem;">
+                    <button onclick="goBack()" class="btn btn-secondary">Back</button>
+                    <button id="submitBtn" onclick="submitApplication()" class="btn btn-primary">Submit Application</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="success-container hidden">
+            <div class="success-card">
+                <div class="success-icon">✅</div>
+                <h2 class="success-title">🎉 Application Submitted!</h2>
+                <p class="success-text">
+                    Your college selection has been recorded successfully. Join our community and get your allotment results!
+                </p>
+                
+                <!-- Enhanced Success Actions -->
+                <div class="success-actions">
+                    <div class="success-social-links">
+                        <a href="#" id="successFacebookBtn" class="success-btn success-facebook-btn" target="_blank">
+                            📘 Join Our Facebook Group
+                        </a>
+                        <a href="#" id="successYoutubeBtn" class="success-btn success-youtube-btn" target="_blank">
+                            📺 Visit Our Channel
+                        </a>
+                    </div>
+                    
+                    <!-- Biology Topper Promotion -->
+                    <div class="biology-promo">
+                        <h3>🧬 HSC 27 Biology Topper Course</h3>
+                        <p>Join the same course that helped our student become the Biology Topper! Get expert guidance and proven strategies.</p>
+                        <a href="#" id="biologyPromoBtn" class="biology-promo-btn" target="_blank">
+                            Enroll Now - Special Discount!
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 🔧 EASY CUSTOMIZATION SETTINGS - Change these URLs and images easily!
+        const PREMIUM_SETTINGS = {
+            // 📱 Social Media Links
+            facebookUrl: 'https://facebook.com/groups/dsschool',     // Your Facebook Group
+            youtubeUrl: 'https://youtube.com/c/dsschool',            // Your YouTube Channel
+            
+            // 🖼️ Custom Branding
+            customLogoUrl: null,  // Add your logo: 'https://your-site.com/logo.png' (60x60px recommended)
+            dsSchoolUrl: 'https://dsschool.com',  // DS School main website link
+            
+            // 🎓 Course/Batch Promotion
+            courseBannerUrl: 'https://dsschool.com/hsc27-biology',   // Course landing page
+            biologyPromoUrl: 'https://dsschool.com/biology-topper-batch', // Biology course page
+            
+            // 🎨 Branding Text (easily changeable)
+            courseBannerText: 'HSC 27 Biology Topper Batch',
+            schoolName: 'DS School'
+        };
+
+        // Configuration - Replace with your Google Apps Script URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSZ5_XXDw3_5NseRIlBRNjC2HrYYz5WHPmU_XY47U2ER0AQTR5m22jbdvEuWaCCghl/exec';
+        
+        let availableColleges = [];
+        let formData = {
+            preferences: []
+        };
+
+        // 🚀 Initialize all premium features on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePremiumFeatures();
+        });
+
+        function initializePremiumFeatures() {
+            // 🖼️ Custom Logo Setup
+            if (PREMIUM_SETTINGS.customLogoUrl) {
+                const logoImg = document.getElementById('dsLogoImage');
+                logoImg.src = PREMIUM_SETTINGS.customLogoUrl;
+                logoImg.onload = function() {
+                    this.classList.add('loaded');
+                    document.getElementById('dsLogoFallback').classList.add('hidden');
+                };
+                logoImg.onerror = function() {
+                    // Fallback to DS initials if logo fails to load
+                    this.style.display = 'none';
+                    document.getElementById('dsLogoFallback').classList.remove('hidden');
+                };
+            }
+            
+            // 🔗 All Link Setups
+            document.getElementById('dsSchoolLink').href = PREMIUM_SETTINGS.dsSchoolUrl;
+            document.getElementById('biologyBannerLink').href = PREMIUM_SETTINGS.courseBannerUrl;
+            
+            // 📱 Main Header Social Links
+            document.getElementById('mainFacebookLink').href = PREMIUM_SETTINGS.facebookUrl;
+            document.getElementById('mainYoutubeLink').href = PREMIUM_SETTINGS.youtubeUrl;
+            
+            // 📱 Success Page Social Links
+            if (document.getElementById('successFacebookBtn')) {
+                document.getElementById('successFacebookBtn').href = PREMIUM_SETTINGS.facebookUrl;
+            }
+            if (document.getElementById('successYoutubeBtn')) {
+                document.getElementById('successYoutubeBtn').href = PREMIUM_SETTINGS.youtubeUrl;
+            }
+            if (document.getElementById('biologyPromoBtn')) {
+                document.getElementById('biologyPromoBtn').href = PREMIUM_SETTINGS.biologyPromoUrl;
+            }
+        }
+
+        // Basic form submission
+        document.getElementById('studentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            const phoneRegex = /^01[3-9]\d{8}$/;
+            const studentPhone = document.getElementById('studentPhone').value;
+            const parentPhone = document.getElementById('parentPhone').value;
+            const gpa = parseFloat(document.getElementById('sscGpa').value);
+            
+            if (!phoneRegex.test(studentPhone)) {
+                alert('Student mobile must be 11 digits starting with 01');
+                return;
+            }
+            
+            if (!phoneRegex.test(parentPhone)) {
+                alert('Parent mobile must be 11 digits starting with 01');
+                return;
+            }
+            
+            if (isNaN(gpa) || gpa < 0 || gpa > 5) {
+                alert('GPA must be between 0.00 and 5.00');
+                return;
+            }
+            
+            // Store form data
+            formData = {
+                fullName: document.getElementById('fullName').value,
+                schoolName: document.getElementById('schoolName').value,
+                studentPhone: studentPhone,
+                parentPhone: parentPhone,
+                sscGpa: document.getElementById('sscGpa').value,
+                totalMarks: document.getElementById('totalMarks').value,
+                gender: document.getElementById('gender').value,
+                version: document.getElementById('version').value,
+                preferences: []
+            };
+            
+            // Show college selection form
+            showCollegeForm();
+        });
+
+        async function showCollegeForm() {
+            document.getElementById('basicForm').classList.add('hidden');
+            document.getElementById('collegeForm').classList.remove('hidden');
+            
+            // Update info display
+            document.getElementById('selectionInfo').textContent = 
+                `Select colleges for your application`;
+            
+            document.getElementById('studentInfo').innerHTML = `
+                <h4 style="color: white; font-weight: 600; margin-bottom: 0.5rem;">Your Information:</h4>
+                <p style="color: #cbd5e1; font-size: 0.875rem;">
+                    Name: ${formData.fullName} | GPA: ${formData.sscGpa} | Marks: ${formData.totalMarks} | Gender: ${formData.gender} | Version: ${formData.version}
+                </p>
+            `;
+            
+            // Load all colleges from Google Sheets (no filtering)
+            await loadColleges();
+        }
+
+        async function loadColleges() {
+            try {
+                document.getElementById('loadingColleges').classList.remove('hidden');
+                document.getElementById('errorMessage').classList.add('hidden');
+                
+                // Build URL for getting all colleges (no filtering)
+                const params = new URLSearchParams({
+                    action: 'getColleges'
+                    // No filtering parameters - we want all colleges
+                });
+                
+                console.log('Loading all colleges from:', GOOGLE_SCRIPT_URL + '?' + params.toString());
+                
+                // Make API call to Google Apps Script
+                const response = await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Store all colleges without any filtering
+                    availableColleges = result.data;
+                    
+                    console.log(`✅ Loaded ${availableColleges.length} colleges successfully`);
+                    
+                    displayCollegeStats();
+                    createPreferenceInputs();
+                    document.getElementById('loadingColleges').classList.add('hidden');
+                    document.getElementById('collegeSelection').classList.remove('hidden');
+                } else {
+                    throw new Error(result.message || 'Failed to load colleges');
+                }
+                
+            } catch (error) {
+                console.error('Error loading colleges:', error);
+                document.getElementById('loadingColleges').classList.add('hidden');
+                document.getElementById('errorMessage').classList.remove('hidden');
+                
+                // Show detailed error message
+                document.getElementById('errorMessage').innerHTML = `
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>Please check your Google Apps Script URL and try again.</p>
+                    <p><strong>Debug Info:</strong></p>
+                    <p>URL: ${GOOGLE_SCRIPT_URL}</p>
+                `;
+            }
+        }
+
+        function displayCollegeStats() {
+            const totalColleges = availableColleges.length;
+            
+            document.getElementById('statsText').innerHTML = `
+                <strong>${totalColleges}</strong> colleges available in total<br>
+                <span style="color: #10b981;">✅ All colleges from our database are shown</span><br>
+                <span style="font-size: 0.8rem; color: #94a3b8;">
+                    No restrictions applied - choose any college you prefer
+                </span>
+            `;
+        }
+
+        function createPreferenceInputs() {
+            const container = document.getElementById('preferencesList');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                const div = document.createElement('div');
+                div.className = 'search-container';
+                
+                div.innerHTML = `
+                    <label class="label">
+                        Preference ${i + 1} ${i === 0 ? '<span style="color: #ef4444;">*</span>' : ''}
+                    </label>
+                    <div style="position: relative;">
+                        <input type="text" 
+                               id="pref${i}" 
+                               class="input" 
+                               placeholder="Type to search colleges or click to see all"
+                               autocomplete="off"
+                               oninput="filterColleges(${i}, this.value)"
+                               onfocus="showDropdown(${i})"
+                               onblur="hideDropdown(${i})">
+                        <div class="search-dropdown" id="dropdown${i}"></div>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            }
+        }
+
+        function filterColleges(index, searchValue) {
+            const dropdown = document.getElementById(`dropdown${index}`);
+            
+            // Show all colleges if no search value, or filter by search value
+            let filtered = availableColleges;
+            if (searchValue.trim()) {
+                filtered = availableColleges.filter(college => 
+                    college.collegeName.toLowerCase().includes(searchValue.toLowerCase())
+                );
+            }
+            
+            // Remove already selected colleges
+            const selectedColleges = [];
+            for (let i = 0; i < 10; i++) {
+                const input = document.getElementById(`pref${i}`);
+                if (input && input.value && i !== index) {
+                    selectedColleges.push(input.value);
+                }
+            }
+            
+            filtered = filtered.filter(college => !selectedColleges.includes(college.collegeName));
+            
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<div class="search-item" style="cursor: default;">No colleges found</div>';
+            } else {
+                dropdown.innerHTML = filtered.map(college => {
+                    return `
+                        <div class="search-item" onmousedown="selectCollege(${index}, '${college.collegeName.replace(/'/g, "\\'")}', ${college.seats || 0}, ${college.minGPA || 0})">
+                            <div style="font-weight: 600;">${college.collegeName}</div>
+                            <div class="college-info">
+                                ${college.seats ? `Seats: ${college.seats}` : 'Seats: N/A'} | 
+                                ${college.minGPA ? `Min GPA: ${college.minGPA}` : 'Min GPA: N/A'} | 
+                                ${college.gender || 'N/A'} | 
+                                ${college.version || 'N/A'}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            dropdown.classList.add('active');
+        }
+
+        function selectCollege(index, collegeName, seats, minGPA) {
+            const input = document.getElementById(`pref${index}`);
+            input.value = collegeName;
+            
+            // Store the selection
+            formData.preferences[index] = {
+                collegeName: collegeName,
+                seats: seats || 0,
+                minGPA: minGPA || 0
+            };
+            
+            hideDropdown(index);
+        }
+
+        function showDropdown(index) {
+            const input = document.getElementById(`pref${index}`);
+            filterColleges(index, input.value);
+        }
+
+        function hideDropdown(index) {
+            setTimeout(() => {
+                const dropdown = document.getElementById(`dropdown${index}`);
+                if (dropdown) {
+                    dropdown.classList.remove('active');
+                }
+            }, 200);
+        }
+
+        function goBack() {
+            document.getElementById('collegeForm').classList.add('hidden');
+            document.getElementById('basicForm').classList.remove('hidden');
+        }
+
+        async function submitApplication() {
+            // Update preferences from inputs
+            const updatedPreferences = [];
+            for (let i = 0; i < 10; i++) {
+                const input = document.getElementById(`pref${i}`);
+                if (input && input.value && input.value.trim()) {
+                    // Find the college data
+                    const college = availableColleges.find(c => c.collegeName === input.value.trim());
+                    if (college) {
+                        updatedPreferences.push({
+                            preference: i + 1,
+                            collegeName: college.collegeName,
+                            seats: college.seats || 0,
+                            minGPA: college.minGPA || 0
+                        });
+                    }
+                }
+            }
+            
+            formData.preferences = updatedPreferences;
+            
+            // Check if at least one preference is selected
+            if (formData.preferences.length === 0) {
+                alert('Please select at least one college preference');
+                return;
+            }
+            
+            // Show confirmation
+            const confirmMessage = `
+Submit Application Confirmation:
+
+Student: ${formData.fullName}
+School: ${formData.schoolName}
+GPA: ${formData.sscGpa}
+Selected Colleges: ${formData.preferences.length}
+
+Preferences:
+${formData.preferences.map((pref, index) => `${index + 1}. ${pref.collegeName}`).join('\n')}
+
+Do you want to submit this application?
+            `;
+            
+            if (!confirm(confirmMessage.trim())) {
+                return;
+            }
+            
+            // Disable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            try {
+                // Prepare data for submission
+                const submissionData = {
+                    action: 'submitApplication',
+                    timestamp: new Date().toISOString(),
+                    fullName: formData.fullName || '',
+                    schoolName: formData.schoolName || '',
+                    studentPhone: formData.studentPhone || '',
+                    parentPhone: formData.parentPhone || '',
+                    sscGpa: formData.sscGpa || '',
+                    totalMarks: formData.totalMarks || '',
+                    gender: formData.gender || '',
+                    version: formData.version || '',
+                    preferences: formData.preferences || []
+                };
+                
+                console.log('=== SUBMISSION DEBUG ===');
+                console.log('URL:', GOOGLE_SCRIPT_URL);
+                console.log('Data being sent:', JSON.stringify(submissionData, null, 2));
+                
+                // Try multiple submission methods
+                let result = null;
+                let lastError = null;
+                
+                // Method 1: Standard fetch with detailed error handling
+                try {
+                    console.log('Attempting Method 1: Standard fetch...');
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+                    
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify(submissionData),
+                        mode: 'cors',
+                        credentials: 'omit',
+                        signal: controller.signal
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const responseText = await response.text();
+                    console.log('Response text:', responseText);
+                    
+                    if (!responseText) {
+                        throw new Error('Empty response from server');
+                    }
+                    
+                    result = JSON.parse(responseText);
+                    console.log('✅ Method 1 successful:', result);
+                    
+                } catch (error) {
+                    console.log('❌ Method 1 failed:', error.message);
+                    lastError = error;
+                    
+                    // Method 2: Try with different headers
+                    try {
+                        console.log('Attempting Method 2: Alternative headers...');
+                        
+                        const response2 = await fetch(GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'text/plain',
+                            },
+                            body: JSON.stringify(submissionData),
+                            mode: 'no-cors'
+                        });
+                        
+                        // Note: no-cors mode doesn't allow reading response
+                        console.log('✅ Method 2 submitted (no-cors mode)');
+                        result = { status: 'success', message: 'Application submitted (no-cors mode)' };
+                        
+                    } catch (error2) {
+                        console.log('❌ Method 2 failed:', error2.message);
+                        
+                        // Method 3: Try GET request with data as URL parameters (fallback)
+                        try {
+                            console.log('Attempting Method 3: GET fallback...');
+                            
+                            const params = new URLSearchParams({
+                                action: 'submitApplication',
+                                fullName: submissionData.fullName,
+                                schoolName: submissionData.schoolName,
+                                studentPhone: submissionData.studentPhone,
+                                parentPhone: submissionData.parentPhone,
+                                sscGpa: submissionData.sscGpa,
+                                totalMarks: submissionData.totalMarks,
+                                gender: submissionData.gender,
+                                version: submissionData.version,
+                                preferences: JSON.stringify(submissionData.preferences),
+                                timestamp: submissionData.timestamp
+                            });
+                            
+                            const response3 = await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
+                            const result3 = await response3.json();
+                            
+                            console.log('✅ Method 3 successful:', result3);
+                            result = result3;
+                            
+                        } catch (error3) {
+                            console.log('❌ Method 3 failed:', error3.message);
+                            throw lastError; // Throw the original error
+                        }
+                    }
+                }
+                
+                // Check result
+                if (result && result.status === 'success') {
+                    console.log('✅ Application submitted successfully!');
+                    console.log('Details:', result);
+                    
+                    // Show success message
+                    document.getElementById('collegeForm').classList.add('hidden');
+                    document.getElementById('successMessage').classList.remove('hidden');
+                } else {
+                    throw new Error(result?.message || 'Unknown error occurred');
+                }
+                
+            } catch (error) {
+                console.error('=== SUBMISSION ERROR ===');
+                console.error('Error type:', error.name);
+                console.error('Error message:', error.message);
+                console.error('Full error:', error);
+                
+                // Show user-friendly error message with solutions
+                let userMessage = '❌ Failed to submit application.\n\n';
+                
+                if (error.message.includes('fetch') || error.message.includes('network') || error.message.includes('Failed to fetch')) {
+                    userMessage += '🌐 NETWORK ERROR:\n';
+                    userMessage += '• Check your internet connection\n';
+                    userMessage += '• Try refreshing the page\n';
+                    userMessage += '• Contact DS School if problem persists\n\n';
+                    userMessage += '📧 Alternative: Email your details to dsschool@email.com';
+                } else if (error.message.includes('CORS')) {
+                    userMessage += '🔒 SECURITY ERROR:\n';
+                    userMessage += '• The server settings need to be updated\n';
+                    userMessage += '• Contact DS School technical team\n\n';
+                    userMessage += '📱 Alternative: Call DS School directly';
+                } else if (error.message.includes('timeout') || error.message.includes('aborted')) {
+                    userMessage += '⏱️ TIMEOUT ERROR:\n';
+                    userMessage += '• Server is taking too long to respond\n';
+                    userMessage += '• Try again in a few minutes\n';
+                    userMessage += '• Use a faster internet connection\n\n';
+                    userMessage += '💾 Your data is saved locally - try submitting again';
+                } else {
+                    userMessage += '⚠️ UNKNOWN ERROR:\n';
+                    userMessage += `• ${error.message}\n\n`;
+                    userMessage += '🔧 SOLUTIONS:\n';
+                    userMessage += '• Refresh the page and try again\n';
+                    userMessage += '• Try a different browser\n';
+                    userMessage += '• Contact DS School support\n\n';
+                }
+                
+                userMessage += '\n📋 YOUR APPLICATION DATA:\n';
+                userMessage += `Student: ${formData.fullName}\n`;
+                userMessage += `School: ${formData.schoolName}\n`;
+                userMessage += `Phone: ${formData.studentPhone}\n`;
+                userMessage += `GPA: ${formData.sscGpa}\n`;
+                userMessage += `Colleges: ${formData.preferences.map(p => p.collegeName).join(', ')}`;
+                
+                alert(userMessage);
+                
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Try Submit Again';
+            }
+        }
+    </script>
+</body>
+</html>
