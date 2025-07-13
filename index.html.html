@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DS School - College Selection Portal</title>
+    <!-- Include jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -21,13 +23,13 @@
         /* Enhanced Logo Styles */
         .logo-container {
             position: relative;
-            width: 70px;
-            height: 70px;
+            width: 48px;
+            height: 48px;
         }
 
         .logo-image {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             border-radius: 0.5rem;
             object-fit: cover;
             display: none;
@@ -292,61 +294,113 @@
                          0 0 25px rgba(24, 119, 242, 0.8);
         }
 
+        /* NEW: Banners Container - Vertical Stack for Laptop */
+        .banners-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+
         /* Biology Banner - Nature Theme Green */
         .biology-banner {
             text-decoration: none;
             display: flex;
             justify-content: center;
-            padding: 1rem 0;
             transition: all 0.3s ease;
         }
 
         .biology-button {
-            background: #34d399;
+            background: linear-gradient(135deg, #059669, #34d399);
             border-radius: 20px;
-            padding: 0.8rem 5rem;
+            padding: 0.8rem 2.5rem;
             position: relative;
             overflow: hidden;
-            max-width: 800px;
-            width: 98%;
+            width: 100%;
             
-            /* Slightly Darker Green Border */
-            border: 3px solid rgba(52, 211, 153, 0.5);
+            /* Green Gradient Border */
+            border: 3px solid rgba(5, 150, 105, 0.5);
             
-            /* Slightly Darker Green Glow */
-            box-shadow: 0 0 30px rgba(52, 211, 153, 0.8),
-                        0 0 60px rgba(52, 211, 153, 0.6),
-                        0 0 90px rgba(52, 211, 153, 0.4),
-                        inset 0 0 30px rgba(255, 255, 255, 0.2);
+            /* Green Gradient Glow - REDUCED */
+            box-shadow: 0 0 15px rgba(5, 150, 105, 0.6),
+                        0 0 30px rgba(52, 211, 153, 0.4),
+                        0 0 45px rgba(5, 150, 105, 0.2),
+                        inset 0 0 20px rgba(255, 255, 255, 0.2);
             
-            /* Slightly Darker Green Pulsing Animation */
-            animation: darkerGreenPulse 2s ease-in-out infinite alternate;
+            /* Green Gradient Pulsing Animation - REDUCED */
+            animation: greenGradientPulseReduced 2s ease-in-out infinite alternate;
         }
 
-        @keyframes darkerGreenPulse {
+        @keyframes greenGradientPulseReduced {
             0% {
-                box-shadow: 0 0 30px rgba(52, 211, 153, 0.8),
-                            0 0 60px rgba(52, 211, 153, 0.6),
-                            0 0 90px rgba(52, 211, 153, 0.4),
-                            inset 0 0 30px rgba(255, 255, 255, 0.2);
+                box-shadow: 0 0 15px rgba(5, 150, 105, 0.6),
+                            0 0 30px rgba(52, 211, 153, 0.4),
+                            0 0 45px rgba(5, 150, 105, 0.2),
+                            inset 0 0 20px rgba(255, 255, 255, 0.2);
                 transform: scale(1);
             }
             100% {
-                box-shadow: 0 0 40px rgba(52, 211, 153, 1),
-                            0 0 80px rgba(52, 211, 153, 0.8),
-                            0 0 120px rgba(52, 211, 153, 0.6),
-                            inset 0 0 40px rgba(255, 255, 255, 0.3);
-                transform: scale(1.02);
+                box-shadow: 0 0 20px rgba(5, 150, 105, 0.8),
+                            0 0 40px rgba(52, 211, 153, 0.6),
+                            0 0 60px rgba(5, 150, 105, 0.4),
+                            inset 0 0 25px rgba(255, 255, 255, 0.25);
+                transform: scale(1.015);
             }
         }
 
-        .biology-content {
+        /* NEW: College Info Banner - Purple Theme */
+        .college-info-banner {
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .college-info-button {
+            background: #dc2626;
+            border-radius: 20px;
+            padding: 0.8rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            
+            /* Red Border */
+            border: 3px solid rgba(220, 38, 38, 0.5);
+            
+            /* Red Glow - REDUCED */
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.6),
+                        0 0 30px rgba(220, 38, 38, 0.4),
+                        0 0 45px rgba(220, 38, 38, 0.2),
+                        inset 0 0 20px rgba(255, 255, 255, 0.2);
+            
+            /* Red Pulsing Animation - REDUCED */
+            animation: redPulseReduced 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes redPulseReduced {
+            0% {
+                box-shadow: 0 0 15px rgba(220, 38, 38, 0.6),
+                            0 0 30px rgba(220, 38, 38, 0.4),
+                            0 0 45px rgba(220, 38, 38, 0.2),
+                            inset 0 0 20px rgba(255, 255, 255, 0.2);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(220, 38, 38, 0.8),
+                            0 0 40px rgba(220, 38, 38, 0.6),
+                            0 0 60px rgba(220, 38, 38, 0.4),
+                            inset 0 0 25px rgba(255, 255, 255, 0.25);
+                transform: scale(1.015);
+            }
+        }
+
+        .banner-content {
             text-align: center;
             position: relative;
             z-index: 2;
         }
 
-        .biology-title {
+        .banner-title {
             color: white;
             font-size: 1.2rem;
             font-weight: 900;
@@ -357,20 +411,43 @@
             line-height: 1.2;
             white-space: nowrap;
             
-            /* Nature-themed white text with green glow */
+            /* White text with colored glow */
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
-                         0 0 20px rgba(52, 211, 153, 0.6),
-                         0 0 30px rgba(16, 185, 129, 0.4),
+                         0 0 20px currentColor,
+                         0 0 30px currentColor,
+                         0 0 40px currentColor;
+        }
+
+        .biology-banner .banner-title {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                         0 0 20px rgba(5, 150, 105, 0.6),
+                         0 0 30px rgba(52, 211, 153, 0.4),
                          0 0 40px rgba(5, 150, 105, 0.3);
+        }
+
+        .college-info-banner .banner-title {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                         0 0 20px rgba(220, 38, 38, 0.6),
+                         0 0 30px rgba(185, 28, 28, 0.4),
+                         0 0 40px rgba(153, 27, 27, 0.3);
         }
 
         .biology-banner:hover .biology-button {
             animation-duration: 1s;
-            box-shadow: 0 0 50px rgba(52, 211, 153, 1),
-                        0 0 100px rgba(52, 211, 153, 0.9),
-                        0 0 150px rgba(52, 211, 153, 0.7),
-                        inset 0 0 50px rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 0 25px rgba(5, 150, 105, 0.9),
+                        0 0 50px rgba(52, 211, 153, 0.7),
+                        0 0 75px rgba(5, 150, 105, 0.5),
+                        inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .college-info-banner:hover .college-info-button {
+            animation-duration: 1s;
+            box-shadow: 0 0 25px rgba(220, 38, 38, 0.9),
+                        0 0 50px rgba(220, 38, 38, 0.7),
+                        0 0 75px rgba(220, 38, 38, 0.5),
+                        inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.02);
         }
 
         /* Container */
@@ -553,8 +630,25 @@
             font-size: 0.875rem;
         }
 
+        /* Enhanced Filter Alert */
+        .filter-alert {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .filter-alert.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
         .success-container {
-            max-width: 32rem;
+            max-width: 40rem;
             margin: 4rem auto;
             padding: 0 1rem;
         }
@@ -572,38 +666,106 @@
         .success-icon {
             font-size: 4rem;
             margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
         }
 
         .success-title {
             font-size: 1.875rem;
             font-weight: bold;
             margin-bottom: 1rem;
+            color: #10b981;
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
         }
 
         .success-text {
             color: #cbd5e1;
             margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
 
         .success-actions {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
             margin-top: 2rem;
         }
 
-        .success-social-links {
-            display: flex;
+        /* NEW: 2x2 Success Grid */
+        .success-buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* PDF Download Button - Enhanced Red Design */
+        .pdf-download-btn {
+            background: linear-gradient(135deg, #dc2626, #ef4444, #f87171);
+            color: white;
+            border: 3px solid rgba(220, 38, 38, 0.3);
+            box-shadow: 0 0 25px rgba(220, 38, 38, 0.4),
+                        0 0 50px rgba(220, 38, 38, 0.2),
+                        0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 1.2rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
+            gap: 0.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .pdf-download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .pdf-download-btn:hover::before {
+            left: 100%;
+        }
+
+        .pdf-download-btn:hover {
+            box-shadow: 0 0 35px rgba(220, 38, 38, 0.7),
+                        0 0 70px rgba(220, 38, 38, 0.4),
+                        0 0 100px rgba(220, 38, 38, 0.2),
+                        0 12px 35px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px) scale(1.05);
         }
 
         .success-btn {
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 1.5rem;
             border-radius: 1rem;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -615,6 +777,8 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            text-align: center;
         }
 
         .success-btn::before {
@@ -666,6 +830,146 @@
             transform: translateY(-5px) scale(1.05);
         }
 
+        .success-biology-btn {
+            background: linear-gradient(135deg, #10b981, #34d399, #6ee7b7);
+            color: white;
+            border: 3px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4),
+                        0 0 50px rgba(16, 185, 129, 0.2),
+                        0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-share-btn {
+            background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+            color: white;
+            border: 3px solid rgba(124, 58, 237, 0.3);
+            box-shadow: 0 0 25px rgba(124, 58, 237, 0.4),
+                        0 0 50px rgba(124, 58, 237, 0.2),
+                        0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-share-btn:hover {
+            box-shadow: 0 0 35px rgba(124, 58, 237, 0.7),
+                        0 0 70px rgba(124, 58, 237, 0.4),
+                        0 0 100px rgba(124, 58, 237, 0.2),
+                        0 12px 35px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        /* Share Menu Styles */
+        .share-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(124, 58, 237, 0.5);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
+                        0 0 50px rgba(124, 58, 237, 0.3);
+            z-index: 1000;
+            display: none;
+            min-width: 350px;
+            text-align: center;
+        }
+
+        .share-menu.active {
+            display: block;
+        }
+
+        .share-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+
+        .share-overlay.active {
+            display: block;
+        }
+
+        .share-menu h3 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+        }
+
+        .share-menu p {
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .share-btn {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .share-facebook {
+            background: linear-gradient(135deg, #1877f2, #4267B2);
+            color: white;
+        }
+
+        .share-whatsapp {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+        }
+
+        .share-messenger {
+            background: linear-gradient(135deg, #0084ff, #0066cc);
+            color: white;
+        }
+
+        .share-copy {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        .close-share {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-share:hover {
+            transform: scale(1.05);
+        }
+
         .biology-promo {
             background: linear-gradient(135deg, #10b981, #34d399, #6ee7b7);
             border-radius: 1.25rem;
@@ -678,6 +982,7 @@
                         0 15px 35px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
+            display: none; /* Hidden by default since we moved it to grid */
         }
 
         .biology-promo::before {
@@ -729,6 +1034,8 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            width: 100%;
+            max-width: 300px;
         }
 
         .biology-promo-btn:hover {
@@ -811,14 +1118,37 @@
                 font-size: 1.2rem;
             }
 
-            .biology-title {
+            .banner-title {
                 font-size: 1rem;
             }
 
-            .biology-button {
-                padding: 0.6rem 2.5rem;
-                max-width: 98%;
+            .biology-button, .college-info-button {
+                padding: 0.6rem 1.5rem;
                 border-radius: 15px;
+            }
+
+            .banners-container {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .success-buttons-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .success-container {
+                max-width: 95%;
+                margin: 2rem auto;
+            }
+
+            .success-card {
+                padding: 1.5rem;
+            }
+
+            .pdf-download-btn, .success-btn {
+                padding: 1rem 1.2rem;
+                font-size: 0.9rem;
             }
         }
 
@@ -837,14 +1167,21 @@
                 font-size: 1rem;
             }
 
-            .biology-title {
+            .banner-title {
                 font-size: 0.9rem;
             }
 
-            .biology-button {
-                padding: 0.5rem 2rem;
+            .biology-button, .college-info-button {
+                padding: 0.5rem 1rem;
                 border-radius: 12px;
-                max-width: 100%;
+            }
+
+            .success-title {
+                font-size: 1.5rem;
+            }
+
+            .success-text {
+                font-size: 1rem;
             }
         }
     </style>
@@ -868,32 +1205,75 @@
                     DMC Station School
                 </h1>
                 
-                <!-- Right: Y and F Icons -->
+                <!-- Right: YouTube and Facebook Icons -->
                 <div class="social-icons">
-                    <a href="#" id="mainYoutubeLink" class="social-icon youtube-icon" target="_blank" title="YouTube">Y</a>
-                    <a href="#" id="mainFacebookLink" class="social-icon facebook-icon" target="_blank" title="Facebook">F</a>
+                    <a href="#" id="mainYoutubeLink" class="social-icon youtube-icon" target="_blank" title="YouTube">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                    </a>
+                    <a href="#" id="mainFacebookLink" class="social-icon facebook-icon" target="_blank" title="Facebook">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;">
+                            <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Biology Banner - Clickable -->
-    <a href="#" id="biologyBannerLink" class="biology-banner">
-        <div class="container">
-            <div class="biology-button">
-                <div class="biology-content">
-                    <h1 class="biology-title">🧬 HSC 27 Biology Topper Batch</h1>
+    <!-- Enhanced Banners Section - Two buttons side by side -->
+    <div class="container">
+        <div class="banners-container">
+            <!-- Biology Banner -->
+            <a href="#" id="biologyBannerLink" class="biology-banner">
+                <div class="biology-button">
+                    <div class="banner-content">
+                        <h1 class="banner-title">🧬 HSC 27 Biology Topper Batch</h1>
+                    </div>
                 </div>
-            </div>
+            </a>
+            
+            <!-- NEW: College Info Banner -->
+            <a href="#" id="collegeInfoBannerLink" class="college-info-banner">
+                <div class="college-info-button">
+                    <div class="banner-content">
+                        <h1 class="banner-title">🎓 College Info & Eligibility</h1>
+                    </div>
+                </div>
+            </a>
         </div>
-    </a>
+    </div>
 
     <main class="container">
         <!-- Basic Info Form -->
         <div id="basicForm" class="form-container">
             <div class="form-header">
                 <h2>Student Information</h2>
-                <p>Please provide your basic information for the Survey. The Survey Result will be published soon. share with your friends</p>
+                <p font>📝 ফর্মটি পূরণ করো।
+যা আমাদের জানতে সাহায্য করবে—ভিন্ন ভিন্ন কলেজে ভর্তি হতে প্রায় কত নম্বর প্রয়োজন হতে পারে।
+</p>
+<p> 📊 যত বেশি শিক্ষার্থী অংশ নেবে, তত বেশি সঠিক হবে আমাদের সঠিক কলেজ নম্বর</p>
+<p> 📢 তোমার বন্ধু ও ক্লাসমেটদেরও ফর্মটি পূরণ করতে বলো ও গ্রুপ এ শেয়ার করো ! </p>
+<p>📅 রেজাল্ট আমাদের ফেসবুক গ্রুপে পাবা ১ সপ্তাহের মধ্যেই, ইনশা আল্লাহ।</p>
+                
+                <!-- NEW: How to Fill Up Form Button -->
+                <div style="margin-top: 1.5rem; text-align: center;">
+                    <a href="#" id="howToFillFormBtn" class="btn" style="
+                        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+                        color: white;
+                        padding: 0.75rem 2rem;
+                        border-radius: 0.75rem;
+                        font-weight: 600;
+                        text-decoration: none;
+                        display: inline-block;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+                        border: 2px solid rgba(245, 158, 11, 0.3);
+                    " target="_blank">
+                        ❓ How to Fill Up the Form
+                    </a>
+                </div>
             </div>
             
             <form id="studentForm">
@@ -980,7 +1360,7 @@
                 
                 <h3 style="font-size: 1.25rem; font-weight: 600; color: white; margin-bottom: 1rem;">College Preferences</h3>
                 <p style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 1rem;">
-                    Select <strong>at least 1 college</strong> (up to 10 maximum). All colleges from our database are shown.
+                    Select <strong>at least 1 college</strong> (up to 10 maximum). Only eligible colleges are shown based on your criteria.
                     <br><span style="color: #10b981;">✅ You can submit with just 1 preference or fill up to 10 preferences.</span>
                 </p>
                 
@@ -1001,47 +1381,143 @@
                 <div class="success-icon">✅</div>
                 <h2 class="success-title">🎉 Application Submitted!</h2>
                 <p class="success-text">
-                    Your college selection Form has been recorded successfully. Join our Group and get the results soon!
+                    Your college selection has been recorded successfully. Download your PDF summary and join our community to get your allotment results!
                 </p>
                 
-                <!-- Enhanced Success Actions -->
+                <!-- Enhanced Success Actions - 2x2 Grid -->
                 <div class="success-actions">
-                    <div class="success-social-links">
+                    <div class="success-buttons-grid">
+                        <!-- Top Row -->
+                        <a href="#" id="successBiologyBtn" class="success-btn success-biology-btn" target="_blank">
+                            🧬 Free Biology Group
+                        </a>
                         <a href="#" id="successFacebookBtn" class="success-btn success-facebook-btn" target="_blank">
-                            📘 Join Our Facebook Group for result
+                            📘 Facebook Group for Result
                         </a>
-                        <a href="#" id="successYoutubeBtn" class="success-btn success-youtube-btn" target="_blank">
-                            📺 Visit Our Channel
-                        </a>
-                    </div>
-                    
-                    <!-- Biology Topper Promotion -->
-                    <div class="biology-promo">
-                        <h3>🧬 HSC 27 Biology Free Course</h3>
-                        <p> HSC 27 ব্যাচের জন্য তিনজন Ex-Notre Damian & ঢাকা মেডিকেলের ভাইয়া কর্তৃক পরিচালিত অনলাইনে Free Biology কোর্স। মূল বই + অ্যানিমেশন মিলিয়ে দুর্দান্ত কম্বিনেশন </p>
-                        <a href="#" id="biologyPromoBtn" class="biology-promo-btn" target="_blank">
-                            Join Now-Explore Biology!
-                        </a>
+                        
+                        <!-- Bottom Row -->
+                        <button onclick="generatePDF()" class="pdf-download-btn">
+                            📄 Download PDF
+                        </button>
+                        <button onclick="openShareMenu()" class="success-btn success-share-btn">
+                            🔗 Share it with your friends
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer Section -->
+    <footer style="
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(20px);
+        border-top: 2px solid rgba(59, 130, 246, 0.3);
+        padding: 2rem 0;
+        margin-top: 3rem;
+        text-align: center;
+        color: #cbd5e1;
+    ">
+        <div class="container">
+            <div style="
+                border-bottom: 1px solid rgba(71, 85, 105, 0.5);
+                padding-bottom: 1.5rem;
+                margin-bottom: 1.5rem;
+            ">
+                <p style="
+                    font-size: 0.875rem;
+                    margin-bottom: 0.5rem;
+                    color: #e2e8f0;
+                ">
+                    © 2025 All Rights Reserved to <a href="https://www.facebook.com/share/1BQ5Jd9vwu/" target="_blank" style="
+                        color: #00d4ff;
+                        font-weight: 700;
+                        text-decoration: none;
+                        text-shadow: 0 0 15px rgba(0, 212, 255, 0.6),
+                                     0 0 30px rgba(0, 212, 255, 0.4);
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.color='#ff6b6b'; this.style.textShadow='0 0 20px rgba(255, 107, 107, 0.8), 0 0 40px rgba(255, 107, 107, 0.5)'; this.style.transform='scale(1.05)'" 
+                       onmouseout="this.style.color='#00d4ff'; this.style.textShadow='0 0 15px rgba(0, 212, 255, 0.6), 0 0 30px rgba(0, 212, 255, 0.4)'; this.style.transform='scale(1)'">DMC Station School</a>
+                </p>
+            </div>
+            
+            <div style="
+                font-size: 0.8rem;
+                color: #94a3b8;
+                line-height: 1.5;
+            ">
+                <p style="margin: 0;">
+                    Developed and Maintained by <a href="https://www.sufferingfromsoftware.com" target="_blank" style="
+                        color: #ff3d71;
+                        font-weight: 700;
+                        text-decoration: none;
+                        text-shadow: 0 0 15px rgba(255, 61, 113, 0.6),
+                                     0 0 30px rgba(255, 61, 113, 0.4);
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.color='#4ecdc4'; this.style.textShadow='0 0 20px rgba(78, 205, 196, 0.8), 0 0 40px rgba(78, 205, 196, 0.5)'; this.style.transform='scale(1.05)'" 
+                       onmouseout="this.style.color='#ff3d71'; this.style.textShadow='0 0 15px rgba(255, 61, 113, 0.6), 0 0 30px rgba(255, 61, 113, 0.4)'; this.style.transform='scale(1)'">Suffering From Software</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Share Menu Overlay and Modal -->
+    <div class="share-overlay" id="shareOverlay" onclick="closeShareMenu()"></div>
+    <div class="share-menu" id="shareMenu">
+        <h3>📱 Share with Friends</h3>
+        <p>Share this amazing college selection tool with your friends and help them make informed decisions!</p>
+        
+        <div class="share-buttons">
+            <button onclick="shareOnFacebook()" class="share-btn share-facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                    <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/>
+                </svg>
+                Facebook
+            </button>
+            <button onclick="shareOnWhatsApp()" class="share-btn share-whatsapp">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.51 3.488"/>
+                </svg>
+                WhatsApp
+            </button>
+            <button onclick="shareOnMessenger()" class="share-btn share-messenger">
+                💌 Messenger
+            </button>
+            <button onclick="copyLink()" class="share-btn share-copy">
+                📋 Copy Link
+            </button>
+        </div>
+        
+        <div style="margin-top: 1rem;">
+            <a href="#" id="shareYoutubeBtn" class="share-btn success-youtube-btn" target="_blank" style="width: 100%; margin-bottom: 1rem; display: block;">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                Visit Our YouTube Channel
+            </a>
+        </div>
+        
+        <button onclick="closeShareMenu()" class="close-share">
+            ✕ Close
+        </button>
+    </div>
+
     <script>
         // 🔧 EASY CUSTOMIZATION SETTINGS - Change these URLs and images easily!
         const PREMIUM_SETTINGS = {
             // 📱 Social Media Links
-            facebookUrl: 'https://www.facebook.com/profile.php?id=61571472964612',     // Your Facebook Group
-            youtubeUrl: 'https://www.youtube.com/@dmcstationschool',            // Your YouTube Channel
+            facebookUrl: 'https://www.facebook.com/share/1BQ5Jd9vwu/',     // Your Facebook Group
+            youtubeUrl: 'https://youtube.com/@dmcstationschool?si=QLZtMPQC1Faau7wH',            // Your YouTube Channel
             
             // 🖼️ Custom Branding
-            customLogoUrl: 'https://i.imgur.com/sGFRzBd.jpeg',  // Add your logo: 'https://imgur.com/a/rrjYw2c' (60x60px recommended)
-            dsSchoolUrl: 'https://www.facebook.com/profile.php?id=61571472964612',  // DS School main website link
+            customLogoUrl: null,  // Add your logo: 'https://your-site.com/logo.png' (60x60px recommended)
+            dsSchoolUrl: 'https://www.facebook.com/share/1BQ5Jd9vwu/',  // DS School main website link
             
             // 🎓 Course/Batch Promotion
-            courseBannerUrl: 'https://dmcstationbd.com/course/biotopper27',   // Course landing page
-            biologyPromoUrl: 'https://www.facebook.com/groups/3153685161453866', // Biology course page
+            courseBannerUrl: 'https://www.dmcstationbd.com/course/biotopper27',   // Course landing page
+            biologyPromoUrl: 'https://www.dmcstationbd.com/course/biotopper27', // Biology course page
+            collegeInfoUrl: 'https://www.dmcstationbd.com/college-info', // NEW: College info page
+            howToFillFormUrl: 'https://www.dmcstationbd.com/how-to-fill-form', // NEW: How to fill form guide
             
             // 🎨 Branding Text (easily changeable)
             courseBannerText: 'HSC 27 Biology Topper Batch',
@@ -1052,6 +1528,7 @@
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSZ5_XXDw3_5NseRIlBRNjC2HrYYz5WHPmU_XY47U2ER0AQTR5m22jbdvEuWaCCghl/exec';
         
         let availableColleges = [];
+        let allColleges = [];
         let formData = {
             preferences: []
         };
@@ -1080,21 +1557,12 @@
             // 🔗 All Link Setups
             document.getElementById('dsSchoolLink').href = PREMIUM_SETTINGS.dsSchoolUrl;
             document.getElementById('biologyBannerLink').href = PREMIUM_SETTINGS.courseBannerUrl;
+            document.getElementById('collegeInfoBannerLink').href = PREMIUM_SETTINGS.collegeInfoUrl; // NEW
+            document.getElementById('howToFillFormBtn').href = PREMIUM_SETTINGS.howToFillFormUrl; // NEW
             
             // 📱 Main Header Social Links
             document.getElementById('mainFacebookLink').href = PREMIUM_SETTINGS.facebookUrl;
             document.getElementById('mainYoutubeLink').href = PREMIUM_SETTINGS.youtubeUrl;
-            
-            // 📱 Success Page Social Links
-            if (document.getElementById('successFacebookBtn')) {
-                document.getElementById('successFacebookBtn').href = PREMIUM_SETTINGS.facebookUrl;
-            }
-            if (document.getElementById('successYoutubeBtn')) {
-                document.getElementById('successYoutubeBtn').href = PREMIUM_SETTINGS.youtubeUrl;
-            }
-            if (document.getElementById('biologyPromoBtn')) {
-                document.getElementById('biologyPromoBtn').href = PREMIUM_SETTINGS.biologyPromoUrl;
-            }
         }
 
         // Basic form submission
@@ -1154,7 +1622,7 @@
                 </p>
             `;
             
-            // Load all colleges from Google Sheets (no filtering)
+            // Load colleges with filtering
             await loadColleges();
         }
 
@@ -1163,13 +1631,16 @@
                 document.getElementById('loadingColleges').classList.remove('hidden');
                 document.getElementById('errorMessage').classList.add('hidden');
                 
-                // Build URL for getting all colleges (no filtering)
+                // Build URL for getting colleges
                 const params = new URLSearchParams({
                     action: 'getColleges'
-                    // No filtering parameters - we want all colleges
                 });
                 
-                console.log('Loading all colleges from:', GOOGLE_SCRIPT_URL + '?' + params.toString());
+                console.log('Loading colleges with criteria:', {
+                    gender: formData.gender,
+                    version: formData.version,
+                    gpa: formData.sscGpa
+                });
                 
                 // Make API call to Google Apps Script
                 const response = await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
@@ -1181,10 +1652,11 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Store all colleges without any filtering
-                    availableColleges = result.data;
+                    // Store all colleges and apply client-side filtering
+                    allColleges = result.data;
+                    availableColleges = filterCollegesByCriteria(allColleges, formData);
                     
-                    console.log(`✅ Loaded ${availableColleges.length} colleges successfully`);
+                    console.log(`✅ Loaded ${allColleges.length} total colleges, ${availableColleges.length} eligible for user`);
                     
                     displayCollegeStats();
                     createPreferenceInputs();
@@ -1209,16 +1681,76 @@
             }
         }
 
-        function displayCollegeStats() {
-            const totalColleges = availableColleges.length;
+        // College Filtering Function - Enhanced from second code
+        function filterCollegesByCriteria(colleges, criteria) {
+            const userGPA = parseFloat(criteria.sscGpa);
+            const userGender = criteria.gender;
+            const userVersion = criteria.version;
             
-            document.getElementById('statsText').innerHTML = `
-                <strong>${totalColleges}</strong> colleges available in total<br>
-                <span style="color: #10b981;">✅ All colleges from our database are shown</span><br>
-                <span style="font-size: 0.8rem; color: #94a3b8;">
-                    No restrictions applied - choose any college you prefer
-                </span>
-            `;
+            return colleges.filter(college => {
+                // GPA Filter - user must meet minimum GPA requirement
+                const minGPA = parseFloat(college.minGPA) || 0;
+                if (userGPA < minGPA) {
+                    return false;
+                }
+                
+                // Gender Filter
+                const collegeGender = college.gender || '';
+                if (collegeGender && collegeGender.toLowerCase() !== 'combined') {
+                    if (collegeGender.toLowerCase() !== userGender.toLowerCase()) {
+                        return false;
+                    }
+                }
+                
+                // Version Filter
+                const collegeVersion = college.version || '';
+                if (collegeVersion && collegeVersion.toLowerCase() !== userVersion.toLowerCase()) {
+                    return false;
+                }
+                
+                return true;
+            });
+        }
+
+        function displayCollegeStats() {
+            const eligibleColleges = availableColleges.length;
+            const totalColleges = allColleges.length;
+            
+            let statsHTML = `<strong>${eligibleColleges}</strong> colleges eligible for you`;
+            
+            if (totalColleges > eligibleColleges) {
+                statsHTML += ` out of <strong>${totalColleges}</strong> total colleges<br>`;
+                statsHTML += `<span style="color: #10b981;">✅ Filtered based on your GPA (${formData.sscGpa}), Gender (${formData.gender}), and Version (${formData.version})</span>`;
+            } else {
+                statsHTML += ` available<br><span style="color: #10b981;">✅ All colleges match your criteria</span>`;
+            }
+            
+            document.getElementById('statsText').innerHTML = statsHTML;
+            
+            // Add filtering alert
+            const collegeSelection = document.getElementById('collegeSelection');
+            let existingAlert = collegeSelection.querySelector('.filter-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            if (eligibleColleges === 0) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'filter-alert warning';
+                alertDiv.innerHTML = `
+                    ⚠️ <strong>No colleges match your criteria!</strong><br>
+                    Consider adjusting your preferences or contact DS School for guidance.
+                `;
+                collegeSelection.insertBefore(alertDiv, collegeSelection.firstChild);
+            } else if (totalColleges > eligibleColleges) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'filter-alert';
+                alertDiv.innerHTML = `
+                    🎯 <strong>Smart Filtering Applied!</strong><br>
+                    Showing only colleges that match your GPA, gender, and version requirements.
+                `;
+                collegeSelection.insertBefore(alertDiv, collegeSelection.firstChild);
+            }
         }
 
         function createPreferenceInputs() {
@@ -1237,7 +1769,7 @@
                         <input type="text" 
                                id="pref${i}" 
                                class="input" 
-                               placeholder="Type to search colleges or click to see all"
+                               placeholder="Type to search colleges or click to see all eligible"
                                autocomplete="off"
                                oninput="filterColleges(${i}, this.value)"
                                onfocus="showDropdown(${i})"
@@ -1253,7 +1785,7 @@
         function filterColleges(index, searchValue) {
             const dropdown = document.getElementById(`dropdown${index}`);
             
-            // Show all colleges if no search value, or filter by search value
+            // Show eligible colleges, filtered by search value if provided
             let filtered = availableColleges;
             if (searchValue.trim()) {
                 filtered = availableColleges.filter(college => 
@@ -1273,7 +1805,7 @@
             filtered = filtered.filter(college => !selectedColleges.includes(college.collegeName));
             
             if (filtered.length === 0) {
-                dropdown.innerHTML = '<div class="search-item" style="cursor: default;">No colleges found</div>';
+                dropdown.innerHTML = '<div class="search-item" style="cursor: default;">No eligible colleges found</div>';
             } else {
                 dropdown.innerHTML = filtered.map(college => {
                     return `
@@ -1502,6 +2034,11 @@ Do you want to submit this application?
                     // Show success message
                     document.getElementById('collegeForm').classList.add('hidden');
                     document.getElementById('successMessage').classList.remove('hidden');
+                    
+                    // Initialize success page links
+                    document.getElementById('successFacebookBtn').href = PREMIUM_SETTINGS.facebookUrl;
+                    document.getElementById('shareYoutubeBtn').href = PREMIUM_SETTINGS.youtubeUrl;
+                    document.getElementById('successBiologyBtn').href = PREMIUM_SETTINGS.biologyPromoUrl;
                 } else {
                     throw new Error(result?.message || 'Unknown error occurred');
                 }
@@ -1554,6 +2091,243 @@ Do you want to submit this application?
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Try Submit Again';
             }
+        }
+
+        // PDF Generation Function - Enhanced
+        function generatePDF() {
+            try {
+                // Check if jsPDF is loaded
+                if (!window.jspdf) {
+                    alert('❌ PDF library not loaded. Please refresh the page and try again.');
+                    return;
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                
+                
+                // PDF Configuration
+                const pageWidth = doc.internal.pageSize.width;
+                const pageHeight = doc.internal.pageSize.height;
+                const margin = 20;
+                let yPosition = 30;
+                
+                // Add watermark function
+                try {
+                    doc.saveGraphicsState();
+                    doc.setGState(new doc.GState({opacity: 0.1}));
+                    doc.setTextColor(255, 0, 0); // Red color
+                    doc.setFontSize(80);
+                    doc.setFont('helvetica', 'bold');
+                    
+                    // Rotate and position watermark
+                    const watermarkText = 'DMC STATION';
+                    doc.text(watermarkText, pageWidth / 2, pageHeight / 2, {
+                        angle: 0,
+                        align: 'center'
+                    });
+                    
+                    doc.restoreGraphicsState();
+                } catch (e) {
+                    console.warn('Watermark failed, continuing without it:', e); 
+                }
+                
+                // Header Section
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text('DMC Station – Student College Marks Survey', pageWidth / 2, yPosition, { align: 'center' });
+                
+                // Add line under header
+                yPosition += 10;
+                doc.setLineWidth(1);
+                doc.line(margin, yPosition, pageWidth - margin, yPosition);
+                yPosition += 20;
+                
+                
+                // Student Details Section
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Student Details', margin, yPosition);
+                yPosition += 10;
+                
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const studentDetails = [
+                    `Full Name: ${formData.fullName || 'N/A'}`,
+                    `School: ${formData.schoolName || 'N/A'}`,
+                    `Student Phone: ${formData.studentPhone || 'N/A'}`,
+                    `Parent Phone: ${formData.parentPhone || 'N/A'}`,
+                    `SSC GPA: ${formData.sscGpa || 'N/A'}`,
+                    `Total Marks: ${formData.totalMarks || 'N/A'}`,
+                    `Gender: ${formData.gender || 'N/A'}`,
+                    `Version: ${formData.version || 'N/A'}`
+                ];
+                
+                studentDetails.forEach(detail => {
+                    doc.text(detail, margin, yPosition);
+                    yPosition += 7;
+                });
+                
+                yPosition += 10;
+                
+                // Eligibility Info Section
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Eligibility Summary', margin, yPosition);
+                yPosition += 10;
+                
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                const eligibleCount = availableColleges.length;
+                const totalCount = allColleges.length;
+                doc.text(`Eligible Colleges: ${eligibleCount} out of ${totalCount} total colleges`, margin, yPosition);
+                yPosition += 7;
+                doc.text(`Filtered by: GPA (${formData.sscGpa}), Gender (${formData.gender}), Version (${formData.version})`, margin, yPosition);
+                yPosition += 15;
+                
+                // College Preferences Section
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('College Preferences', margin, yPosition);
+                yPosition += 10;
+                
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                if (formData.preferences && formData.preferences.length > 0) {
+                    formData.preferences.forEach((pref, index) => {
+                        const prefText = `${index + 1}. ${pref.collegeName || 'Unknown College'}`;
+                        doc.text(prefText, margin, yPosition);
+                        yPosition += 7;
+                        
+                        // Add college details in smaller font
+                        doc.setFontSize(9);
+                        doc.setTextColor(100, 100, 100);
+                        const details = `   Seats: ${pref.seats || 'N/A'} | Min GPA: ${pref.minGPA || 'N/A'}`;
+                        doc.text(details, margin, yPosition);
+                        yPosition += 8;
+                        
+                        doc.setFontSize(11);
+                        doc.setTextColor(0, 0, 0);
+                    });
+                } else {
+                    doc.text('No preferences selected', margin, yPosition);
+                    yPosition += 7;
+                }
+                
+                yPosition += 15;
+                
+                // Submission Date Section
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Submission Details', margin, yPosition);
+                yPosition += 10;
+                
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                const submissionDate = new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                doc.text(`Submitted on: ${submissionDate}`, margin, yPosition);
+                yPosition += 7;
+                doc.text(`Total Preferences: ${formData.preferences.length}`, margin, yPosition);
+                
+                // Footer Section
+                const footerY = pageHeight - 30;
+                doc.setLineWidth(0.5);
+                doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
+                
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(100, 100, 100);
+                const footerText = '© 2025 All Rights Reserved | DMC Station';
+                const footerText2 = 'Developed by Suffering From Software Solution';
+                
+                doc.text(footerText, pageWidth / 2, footerY, { align: 'center' });
+                doc.text(footerText2, pageWidth / 2, footerY + 8, { align: 'center' });
+                
+                // Generate filename
+                const date = new Date().toISOString().split('T')[0];
+                const studentName = (formData.fullName || 'student').replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                const filename = `dmc-preference-${studentName}-${date}.pdf`;
+                
+                // Save the PDF
+                doc.save(filename);
+                
+                // Show success message
+                alert('✅ PDF downloaded successfully!\n\nFilename: ' + filename + '\n\nYour college preferences have been saved to your device.');
+                
+            } catch (error) {
+                console.error('PDF Generation Error:', error);
+                alert('❌ Failed to generate PDF: ' + error.message + '\n\nPlease try again or contact support.');
+            }
+        }
+
+        // Share Menu Functions
+        function openShareMenu() {
+            document.getElementById('shareOverlay').classList.add('active');
+            document.getElementById('shareMenu').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeShareMenu() {
+            document.getElementById('shareOverlay').classList.remove('active');
+            document.getElementById('shareMenu').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('🎓 Check out this amazing college selection tool from DMC Station School! It helped me find the perfect colleges based on my GPA and preferences.');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareOnWhatsApp() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('🎓 Hey! Check out this amazing college selection tool from DMC Station School! It helps you find the perfect colleges based on your GPA and preferences. Really useful! ' + window.location.href);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        }
+
+        function shareOnMessenger() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.messenger.com/new/?text=${url}`, '_blank', 'width=600,height=400');
+        }
+
+        function copyLink() {
+            const url = window.location.href;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('✅ Link copied to clipboard!\n\nYou can now paste it anywhere to share with your friends.');
+                }).catch(() => {
+                    fallbackCopy(url);
+                });
+            } else {
+                fallbackCopy(url);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ Link copied to clipboard!\n\nYou can now paste it anywhere to share with your friends.');
+            } catch (err) {
+                alert('❌ Could not copy link. Please copy it manually:\n\n' + text);
+            }
+            document.body.removeChild(textArea);
         }
     </script>
 </body>
